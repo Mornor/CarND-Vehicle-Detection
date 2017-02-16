@@ -16,7 +16,7 @@ from skimage.feature import hog
 import utils
 from sklearn.model_selection import train_test_split
 
-utils.load_images()
+car_images, not_car_images = utils.load_images()
 
 '''
 # Define a function to extract features from a single image window
