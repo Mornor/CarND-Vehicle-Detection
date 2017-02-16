@@ -18,10 +18,10 @@ def load_images():
 	Load images into memory and separate between vehicule and non-vehicule
 	"""
 
-	cars_images_path = []
-	not_cars_images_path = []
-	cars_images = []
-	not_cars_images = []
+	car_images_path = []
+	not_car_images_path = []
+	car_images = []
+	not_car_images = []
 
 	# First divide the original .csv between cars and not_cars path
 	with open(DATASET_PATH + 'labels.csv', 'r') as f:
@@ -29,68 +29,38 @@ def load_images():
 		f.readline() # Skip first line
 		for row in reader:
 			if row[5] == 'Car':
-				cars_images_path.append(row)
+				car_images_path.append(row)
 			else: 
-				not_cars_images_path.append(row)
+				not_car_images_path.append(row)
 
 	# Extract individual vehicules and non-vehicules from the image
-	for i in range(0, 1):
-		image = mpimg.imread(DATASET_PATH + cars_images_path[i][4])
-		xmin = int(cars_images_path[i][0])
-		xmax = int(cars_images_path[i][1])
-		ymin = int(cars_images_path[i][2])
-		ymax = int(cars_images_path[i][3])
-		height = ymax - ymin 
+	for i in range(0, 10):
+		image = mpimg.imread(DATASET_PATH + car_images_path[i][4])
+		xmin = int(car_images_path[i][0])
+		xmax = int(car_images_path[i][2])
+		ymin = int(car_images_path[i][3])
+		ymax = int(car_images_path[i][1])
 		width = xmax - xmin
-		vehicule = image[ymax:ymin+height, xmax:xmin+width]
-		plt.scatter(xmin, ymax)
-		plt.scatter(xmax, ymin)
+		height = ymin - ymax # inverted axes 
+		car = image[ymax:ymax+height, xmin:xmin+width]
+		car_images.append(car)
 
-		plt.imshow(image)
-		plt.show()
-		#vehicule = extract_region_of_interest(cv2.cvtColor(image, cv2.COLOR_BGR2RGB), vertices)
-
-		#vehicule = extract_region_of_interest(image, vertices)
-		#cars_images.append(vehicule)
-		#not_cars_images.append(mpimg.imread(DATASET_PATH + not_cars_images_path[i][4]))
-
-	# For each items, load the images into memory
-	#cars_images = np.array([mpimg.imread(DATASET_PATH + file[4]) for file in cars_images_path]) 
-	#not_cars_images = np.array([mpimg.imread(DATASET_PATH + file[4]) for file in not_cars_images_path]) 
+	for i in range(0, 10):
+		image = mpimg.imread(DATASET_PATH + not_car_images_path[i][4])
+		xmin = int(not_car_images_path[i][0])
+		xmax = int(not_car_images_path[i][2])
+		ymin = int(not_car_images_path[i][3])
+		ymax = int(not_car_images_path[i][1])
+		width = xmax - xmin
+		height = ymin - ymax # inverted axes 
+		not_car = image[ymax:ymax+height, xmin:xmin+width]
+		not_car_images.append(not_car)
 
 	# Transform it into np array
-	cars_images = np.asarray(cars_images)
-	#not_cars_images = np.asarray(not_cars_images)
-	#print(cars_images.shape)
-	#plot_image(cars_images[0])
+	car_images = np.asarray(car_images)
+	not_car_images = np.asarray(not_car_images)
 
-def draw_boxes(img, bboxes, color=(0, 0, 255), thick=6):
-	imcopy = np.copy(img)
-	for bbox in bboxes:
-		cv2.rectangle(imcopy, bbox[0], bbox[1], color, thick)
-	return imcopy
-
-def extract_region_of_interest(image, vertices):
-	"""
-	Extract a region of interest from the images defined by the box coordinates
-	"""
-	# Defining a blank mask to start with
-	mask = np.zeros_like(image)
-
-	# Defining a 3 channel or 1 channel color to fill the mask with depending on the input image
-	if len(image.shape) > 2:
-		channel_count = image.shape[2]  # i.e. 3 or 4 depending on your image
-		ignore_mask_color = (255,) * channel_count
-	else:
-		ignore_mask_color = 255
-
-	# Filling pixels inside the polygon defined by "vertices" with the fill color
-	cv2.fillPoly(mask, vertices, ignore_mask_color)
-
-	# Feturning the image only where mask pixels are nonzero
-	masked_image = cv2.bitwise_and(image, mask)
-	
-	return masked_image
+	return car_images, not_car_images
 
 def plot_image(image, gray=False):
 	if(gray):
