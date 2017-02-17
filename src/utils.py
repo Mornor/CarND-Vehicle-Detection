@@ -43,6 +43,7 @@ def load_images():
 		width = xmax - xmin
 		height = ymin - ymax # inverted axes 
 		car = image[ymax:ymax+height, xmin:xmin+width]
+		car = cv2.resize(car, (64, 64))
 		car_images.append(car)
 
 	for i in range(0, 10):
@@ -54,11 +55,17 @@ def load_images():
 		width = xmax - xmin
 		height = ymin - ymax # inverted axes 
 		not_car = image[ymax:ymax+height, xmin:xmin+width]
+		not_car = cv2.resize(not_car, (64, 64))
 		not_car_images.append(not_car)
 
 	# Transform it into np array
 	car_images = np.asarray(car_images)
 	not_car_images = np.asarray(not_car_images)
+
+	#plot_image(car_images[2])
+
+	#print(car_images.shape)
+	#print(not_car_images.shape)
 
 	return car_images, not_car_images
 
