@@ -4,32 +4,30 @@ Use ./src/utils.py
 Author: Celien Nanson <cesliens@gmail.com>
 """
 
+import cv2
+import time
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
-import numpy as np
-import cv2
-import glob
-import time
 from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
 from skimage.feature import hog
-import utils
 from sklearn.svm import LinearSVC
-from skimage.io import imread
 from sklearn.model_selection import train_test_split
+import numpy as np
+import utils
 
 # Parameters
-color_space = 'RGB' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb
-orient = 9  # HOG orientations
-pix_per_cell = 8 # HOG pixels per cell
-cell_per_block = 2 # HOG cells per block
-hog_channel = "ALL" # Can be 0, 1, 2, or "ALL"
-spatial_size = (16, 16) # Spatial binning dimensions
-hist_bins = 16  # Number of histogram bins
-spatial_feat = False # Spatial features on or off
-hist_feat = False # Histogram features on or off
-hog_feat = True # HOG features on or off
-y_start_stop = [380, 680] # Min and max in y to search in slide_window()
+color_space = 'Lab'			# Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+orient = 9  				# HOG orientations
+pix_per_cell = 8 			# HOG pixels per cell
+cell_per_block = 2 			# HOG cells per block
+hog_channel = "ALL" 		# Can be 0, 1, 2, or "ALL"
+spatial_size = (16, 16) 	# Spatial binning dimensions
+hist_bins = 16  			# Number of histogram bins
+spatial_feat = False 		# Spatial features on or off
+hist_feat = False 			# Histogram features on or off
+hog_feat = True 			# HOG features on or off
+y_start_stop = [380, 680]	# Min and max in y to search in slide_window()
 
 # Load the images as RGB, 64x64
 car_images, not_car_images = utils.load_images(udacity=False)
