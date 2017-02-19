@@ -13,11 +13,12 @@ from sklearn.preprocessing import StandardScaler
 from skimage.feature import hog
 from sklearn.svm import LinearSVC
 from sklearn.model_selection import train_test_split
+from scipy.ndimage.measurements import label
 import numpy as np
 import utils
 
 # Parameters
-color_space = 'Lab'			# Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+color_space = 'YCrCb'			# Can be RGB, HSV, LUV, HLS, YUV, YCrCb
 orient = 9  				# HOG orientations
 pix_per_cell = 8 			# HOG pixels per cell
 cell_per_block = 2 			# HOG cells per block
@@ -65,7 +66,7 @@ svc.fit(X_train, y_train)
 print('Test Accuracy of SVC = ', round(svc.score(X_test, y_test), 4))
 
 # Test the result on one single image
-image = mpimg.imread('./test_images/test4.jpg')
+image = mpimg.imread('./test_images/test1.jpg')
 draw_image = np.copy(image)
 
 windows = utils.slide_window(image, x_start_stop=[None, None], y_start_stop=y_start_stop, xy_window=(64, 64), xy_overlap=(0.5, 0.5))
@@ -77,7 +78,25 @@ hot_windows = utils.search_windows(image, windows, svc, X_scaler, color_space=co
 						hog_channel=hog_channel, spatial_feat=spatial_feat, 
 						hist_feat=hist_feat, hog_feat=hog_feat)                       
 
-window_img = utils.draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)                    
+window_img = utils.draw_boxes(draw_image, hot_windows, color=(0, 0, 255), thick=6)
 
-plt.imshow(window_img)
+# Find the place were is the most overlapping boxes by drawing a Heatmap
+heat = np.zeros_like(window_img[:,:,0]).astype(np.float)
+heat = utils.add_heat(heat, hot_windows)
+heat = utils.apply_threshold(heat, 1)
+heatmap = np.clip(heat, 0, 255)
+labels = label(heatmap)
+draw_img = utils.draw_labeled_bboxes(np.copy(window_img), labels)
+
+fig = plt.figure()
+plt.subplot(121)
+plt.imshow(draw_img)
+plt.title('Car Positions')
+plt.subplot(122)
+plt.imshow(heatmap, cmap='hot')
+plt.title('Heat Map')
+fig.tight_layout()
 plt.show()
+
+#plt.imshow(window_img)
+#plt.show()
