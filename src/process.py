@@ -29,6 +29,7 @@ spatial_feat = False 		# Spatial features on or off
 hist_feat = False 			# Histogram features on or off
 hog_feat = True 			# HOG features on or off
 y_start_stop = [380, 680]	# Min and max in y to search in slide_window()
+x_start_stop = [800, 1280]	# Min and max in x to search in slide_window()
 
 # Load the images as RGB, 64x64
 car_images, not_car_images = utils.load_images(udacity=False)
@@ -66,10 +67,10 @@ svc.fit(X_train, y_train)
 print('Test Accuracy of SVC = ', round(svc.score(X_test, y_test), 4))
 
 # Test the result on one single image
-image = mpimg.imread('./test_images/test1.jpg')
+image = mpimg.imread('./test_images/test5.jpg')
 draw_image = np.copy(image)
 
-windows = utils.slide_window(image, x_start_stop=[None, None], y_start_stop=y_start_stop, xy_window=(64, 64), xy_overlap=(0.5, 0.5))
+windows = utils.slide_window(image, x_start_stop=x_start_stop, y_start_stop=y_start_stop, xy_window=(96, 96), xy_overlap=(0.75, 0.75))
 
 hot_windows = utils.search_windows(image, windows, svc, X_scaler, color_space=color_space, 
 						spatial_size=spatial_size, hist_bins=hist_bins, 
