@@ -7,14 +7,16 @@ import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
+import glob
 from skimage.feature import hog
+from skimage.io import imread
 from sklearn.preprocessing import StandardScaler
 import csv
 
 # Useful constants 
 DATASET_PATH = './dataset/object-detection-crowdai/'
 
-def load_images():
+def load_images(udacity=True):
 	"""
 	Load images into memory and separate between vehicule and non-vehicule
 	"""
@@ -24,51 +26,58 @@ def load_images():
 	car_images = []
 	not_car_images = []
 
-	# First divide the original .csv between cars and not_cars path
-	with open(DATASET_PATH + 'labels.csv', 'r') as f:
-		reader = csv.reader(f)
-		f.readline() # Skip first line
-		for row in reader:
-			if row[5] == 'Car':
-				car_images_path.append(row)
-			else: 
-				not_car_images_path.append(row)
+	if(udacity):
+		# First divide the original .csv between cars and not_cars path
+		with open(DATASET_PATH + 'labels.csv', 'r') as f:
+			reader = csv.reader(f)
+			f.readline() # Skip first line
+			for row in reader:
+				if row[5] == 'Car':
+					car_images_path.append(row)
+				else: 
+					not_car_images_path.append(row)
 
-	# Extract individual vehicules and non-vehicules from the image
-	for i in range(0, 1000):
-		image = mpimg.imread(DATASET_PATH + car_images_path[i][4])
-		xmin = int(car_images_path[i][0])
-		xmax = int(car_images_path[i][2])
-		ymin = int(car_images_path[i][3])
-		ymax = int(car_images_path[i][1])
-		width = xmax - xmin
-		height = ymin - ymax # inverted axes 
-		car = image[ymax:ymax+height, xmin:xmin+width]
-		car = cv2.resize(car, (64, 64))
-		car_images.append(car)
+		# Extract individual vehicules and non-vehicules from the image
+		for i in range(0, 5000):
+			image = mpimg.imread(DATASET_PATH + car_images_path[i][4])
+			xmin = int(car_images_path[i][0])
+			xmax = int(car_images_path[i][2])
+			ymin = int(car_images_path[i][3])
+			ymax = int(car_images_path[i][1])
+			width = xmax - xmin
+			height = ymin - ymax # inverted axes 
+			car = image[ymax:ymax+height, xmin:xmin+width]
+			car = cv2.resize(car, (64, 64))
+			car_images.append(car)
 
-	for i in range(0, 1000):
-		image = mpimg.imread(DATASET_PATH + not_car_images_path[i][4])
-		xmin = int(not_car_images_path[i][0])
-		xmax = int(not_car_images_path[i][2])
-		ymin = int(not_car_images_path[i][3])
-		ymax = int(not_car_images_path[i][1])
-		width = xmax - xmin
-		height = ymin - ymax # inverted axes 
-		not_car = image[ymax:ymax+height, xmin:xmin+width]
-		not_car = cv2.resize(not_car, (64, 64))
-		not_car_images.append(not_car)
+		for i in range(0, 5000):
+			image = mpimg.imread(DATASET_PATH + not_car_images_path[i][4])
+			xmin = int(not_car_images_path[i][0])
+			xmax = int(not_car_images_path[i][2])
+			ymin = int(not_car_images_path[i][3])
+			ymax = int(not_car_images_path[i][1])
+			width = xmax - xmin
+			height = ymin - ymax # inverted axes 
+			not_car = image[ymax:ymax+height, xmin:xmin+width]
+			not_car = cv2.resize(not_car, (64, 64))
+			not_car_images.append(not_car)
 
-	# Transform it into np array
-	car_images = np.asarray(car_images)
-	not_car_images = np.asarray(not_car_images)
+		# Transform it into np array
+		car_images = np.asarray(car_images)
+		not_car_images = np.asarray(not_car_images)
 
-	#plot_image(car_images[2])
+		return car_images, not_car_images
 
-	#print(car_images.shape)
-	#print(not_car_images.shape)
-
-	return car_images, not_car_images
+	else:
+		car_images_path = glob.glob('./dataset/vehicles/*/*.png')
+		not_car_images_path = glob.glob('./dataset/non-vehicles/*/*.png')
+		for i in range(0, 100): 
+			car_images.append(imread(car_images_path[i]))
+		for i in range(0, 100): 
+			not_car_images.append(imread(not_car_images_path[i]))
+		#car_images = [imread(image) for image in car_images_path]
+		#not_car_images = [imread(image) for image in not_car_images_path]
+		return car_images, not_car_images
 
 # Compute binned color features  
 def bin_spatial(img, size=(32, 32)):
@@ -88,8 +97,26 @@ def color_hist(img, nbins=32, bins_range=(0, 256)):
 	# Return the individual histograms, bin_centers and feature vector
 	return hist_features
 
-def get_hog_features(img, orient, pix_per_cell, cell_per_block, vis=False, feature_vec=True):
-	if vis == True:
+def change_color_space(image, color_space):
+	"""
+	Change the color space of an RGB image
+	"""
+	if color_space == 'HSV':
+		image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+	elif color_space == 'LUV':
+		image = cv2.cvtColor(image, cv2.COLOR_RGB2LUV)
+	elif color_space == 'Lab':
+		image = cv2.cvtColor(image, cv2.COLOR_RGB2Lab)
+	elif color_space == 'HLS':
+		image = cv2.cvtColor(image, cv2.COLOR_RGB2HLS)
+	elif color_space == 'YUV':
+		image = cv2.cvtColor(image, cv2.COLOR_RGB2YUV)
+	elif color_space == 'YCrCb':
+		image = cv2.cvtColor(image, cv2.COLOR_RGB2YCrCb)
+	return image
+
+def get_hog_features(img, orient=9, pix_per_cell=8, cell_per_block=2, vis=True, feature_vec=True, color_space='HSV'):
+	if vis:
 		features, hog_image = hog(img, orientations=orient, 
 								pixels_per_cell=(pix_per_cell, pix_per_cell),
 								cells_per_block=(cell_per_block, cell_per_block), 
@@ -113,17 +140,9 @@ def extract_features(images, color_space='RGB', spatial_size=(32, 32), hist_bins
 		file_features = []
 		# apply color conversion if other than 'RGB'
 		if color_space != 'RGB':
-			if color_space == 'HSV':
-				feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
-			elif color_space == 'LUV':
-				feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2LUV)
-			elif color_space == 'HLS':
-				feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2HLS)
-			elif color_space == 'YUV':
-				feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2YUV)
-			elif color_space == 'YCrCb':
-				feature_image = cv2.cvtColor(image, cv2.COLOR_RGB2YCrCb)
-		else: feature_image = np.copy(image)      
+			feature_image = change_color_space(image, color_space)
+		else: 
+			feature_image = np.copy(image)      
 
 		if spatial_feat:
 			spatial_features = bin_spatial(feature_image, size=spatial_size)
@@ -154,16 +173,7 @@ def single_img_features(img, color_space='RGB', spatial_size=(32, 32), hist_bins
 						  
 	img_features = []
 	if color_space != 'RGB':
-		if color_space == 'HSV':
-			feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
-		elif color_space == 'LUV':
-			feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2LUV)
-		elif color_space == 'HLS':
-			feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2HLS)
-		elif color_space == 'YUV':
-			feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2YUV)
-		elif color_space == 'YCrCb':
-			feature_image = cv2.cvtColor(img, cv2.COLOR_RGB2YCrCb)
+		feature_image = change_color_space(img, color_space)
 	else: 
 		feature_image = np.copy(img)      
 	
@@ -234,8 +244,9 @@ def normalize(car_features, not_car_features):
 	"""
 	X = np.vstack((car_features, not_car_features)).astype(np.float64)                        
 	X_scaler = StandardScaler().fit(X)
+	print((X == np.nan).any())
 	scaled_X = X_scaler.transform(X)
-	return scaled_X, X_scaler
+	return X, X_scaler, scaled_X
 
 
 def plot_image(image, gray=False):
