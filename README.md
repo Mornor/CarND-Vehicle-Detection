@@ -23,34 +23,46 @@ The following steps have been applied to each frame of the video stream in order
 
 ### Step details
 
-* Apply a color transform from RGB to YCrCb to the image.
+* Apply a color transform from RGB to YCrCb to the image. <br>
 To decide which color space I was going to use, I run the trained classifier on the same image with different color space: <br>
+  * RGB color space
 ![RGB_color_space](./output_images/Detection_RGB_all_hog_channels.png)
+  * YUV color space
 ![YUV_color_space](./output_images/Detection_YUV_all_hog_channels.png)
-![HLS_color_space](./output_images/Detection_HLS_all_hog_channels.png)
+  * HSV color space
 ![HSV_color_space](./output_images/Detection_HSV_all_hog_channels.png)
+  * Lab color space
 ![Lab_color_space](./output_images/Detection_Lab_all_hog_channels.png)
+  * LUV color space
 ![LUV_color_space](./output_images/Detection_LUV_all_hog_channels.png)
+  * YCrCb color space
 ![YCrCb_color_space](./output_images/Detection_YCrCb_all_hog_channels.png)
 Here, we can see that the YUV, YCrCb and LUV color space all did a pretyy good job identifying the 2 cars. However. YCrCb is the only one to distinctively detect them, therefore it is the color space I am going to use. 
 
-* Perform a Histogram of Oriented Gradients (HOG) feature extraction on the labeled training set of images.
+* Perform a Histogram of Oriented Gradients (HOG) feature extraction on the labeled training set of images. <br>
 The HOG features of a particular image has been chosen to identify a car. This [paper](http://lear.inrialpes.fr/people/triggs/pubs/Dalal-cvpr05.pdf) served as a starting point. <br/>
 The HOG feature can be applied on each of the channel from a givem image. For comparison, here are some samples I computed to base the choice on which color space I was going to use: <br/>
+  * HOG applied to RGB channels
 ![RGB_hog](./output_images/RGB_channel_hog.png)
+  * HOG applied to YUV channels
 ![YUV_hog](./output_images/YUV_channel_hog.png)
+  * HOG applied to HLS channels
 ![HLS_hog](./output_images/HLS_channel_hog.png)
+  * HOG applied to HSV channels
 ![HSV_hog](./output_images/HSV_channel_hog.png)
+  * HOG applied to Lab channels
 ![Lab_hog](./output_images/Lab_channel_hog.png)
+  * HOG applied to LUV channels
 ![LUV_hog](./output_images/LUV_channel_hog.png)
+  * HOG applied to YCrCb channels
 ![YCrCb_hog](./output_images/YCrCb_channel_hog.png)
 From the images above, we can see that YUV or YcrCb are good candidates for the color to use. Indeed, each of the channels display enough data to discriminate a car among other objects.
 
-* Normalize the extracted features. 
+* Normalize the extracted features. <br>
 Like in any Machine-Learning algorithms, it is immportant to normalize the features of the inputs (here the vector representing the HOG features of each channel of the image). By doing this, we avoid giving too much weight to certain parameters. Here is a comparison between not-normalized and normalized feature from a random vehicle image of the dataset: <br/>
 ![normalization](./output_images/normalize_hog_features.png)
 
-* Train the classifier.
+* Train the classifier. <br>
 Before training the classifier, the dataset has been splitted into training and test set. Doing this, I can safely the the accuracy of the classifier on the test set. I obtain more than 99%. 
 ```
 from sklearn.svm import LinearSVC
@@ -58,13 +70,13 @@ svc = LinearSVC()
 svc.fit(X_train, y_train)
 ```
 
-* Implement a sliding-window technique and use the trained classifier to search for vehicles in image.
+* Implement a sliding-window technique and use the trained classifier to search for vehicles in image. <br>
 A window from a defined size will <i>slide</i> to a defined zone of the frame, looking for vehicles. Here, it is not necessary to look for a vehicle above half of the size of the input images, since it's the sky (in the future, may be there will be some cars there too). We can also see that the vehicle on which the camera is is always driving on the left lane of the road. We can then assume that the vehicle will be detected on the right side of the image. 
 
-* Create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicle(s).
+* Create a heat map of recurring detections frame by frame to reject outliers and follow detected vehicle(s). <br>
 It is possible that several boxes are drawn around th vehicle. It is for example the case where a vehicle is detected inside another vehicle. The classifier being not perfect, it can also detect vehicle where the is in fact notthing. These multi-boxes and false-positives detection can be eliminated using a heatmap. Practically, I will weighten all pixels within the boxes detected around the vehicle, then take the centroid of it, and draw a new box around. An example of a heatmap can be seen here: <br>
 ![heatmap](./output_images/heatmap.png)
 
-* Output this bounding box around the vehicle(s).
+* Output this bounding box around the vehicle(s). <br>
 The final result of the pipeline can be see in the following image: 
 ![result](./output_images/example_draw_boxes.png)
