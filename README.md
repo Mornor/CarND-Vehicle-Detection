@@ -37,6 +37,8 @@ To decide which color space I was going to use, I run the trained classifier on 
 ![LUV_color_space](./output_images/Detection_LUV_all_hog_channels.png)
   * YCrCb color space
 ![YCrCb_color_space](./output_images/Detection_YCrCb_all_hog_channels.png)
+
+
 Here, we can see that the YUV, YCrCb and LUV color space all did a pretyy good job identifying the 2 cars. However. YCrCb is the only one to distinctively detect them, therefore it is the color space I am going to use. 
 
 * Perform a Histogram of Oriented Gradients (HOG) feature extraction on the labeled training set of images. <br>
@@ -56,6 +58,8 @@ The HOG feature can be applied on each of the channel from a givem image. For co
 ![LUV_hog](./output_images/LUV_channel_hog.png)
   * HOG applied to YCrCb channels
 ![YCrCb_hog](./output_images/YCrCb_channel_hog.png)
+
+
 From the images above, we can see that YUV or YcrCb are good candidates for the color to use. Indeed, each of the channels display enough data to discriminate a car among other objects.
 
 * Normalize the extracted features. <br>
