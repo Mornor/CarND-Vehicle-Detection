@@ -65,7 +65,9 @@ class Detector:
 
 def prepare_data():
 	# Load the images as RGB, 64x64
+	print('Loading data into memory...')
 	car_images, not_car_images = utils.load_images(udacity=False)
+	print('Data loaded')
 
 	# Extract useful feaures from images 
 	car_images_features = utils.extract_features(car_images, color_space=color_space, 
@@ -127,14 +129,19 @@ def process(image, svc, X_scaler):
 
 	return draw_img
 
-
 svc, X_scaler = prepare_data()
+print('Training SVC...')
 detector = Detector(svc, X_scaler)
+print('Done training SVC')
+
+'''
+image_original = mpimg.imread('./test_images/test2.jpg')
+result = detector.process_frame(image_original)
+plt.imshow(result)
+plt.show()
+'''
 
 output = 'output.mp4'
 clip1 = VideoFileClip("project_video.mp4")
 white_clip = clip1.fl_image(detector.process_frame) #NOTE: this function expects color images!!
 white_clip.write_videofile(output, audio=False)
-
-#plt.imshow(window_img)
-#plt.show()
