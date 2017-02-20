@@ -71,12 +71,12 @@ def load_images(udacity=True):
 	else:
 		car_images_path = glob.glob('./dataset/vehicles/*/*.png')
 		not_car_images_path = glob.glob('./dataset/non-vehicles/*/*.png')
-		for i in range(0, 1000): 
-			car_images.append(imread(car_images_path[i]))
-		for i in range(0, 1000): 
-			not_car_images.append(imread(not_car_images_path[i]))
-		#car_images = [imread(image) for image in car_images_path]
-		#not_car_images = [imread(image) for image in not_car_images_path]
+		#for i in range(0, 1000): 
+		#	car_images.append(imread(car_images_path[i]))
+		#for i in range(0, 1000): 
+		#	not_car_images.append(imread(not_car_images_path[i]))
+		car_images = [imread(image) for image in car_images_path]
+		not_car_images = [imread(image) for image in not_car_images_path]
 		return car_images, not_car_images
 
 # Compute binned color features  
@@ -275,7 +275,7 @@ def normalize(car_features, not_car_features):
 	"""
 	X = np.vstack((car_features, not_car_features)).astype(np.float64)                        
 	X_scaler = StandardScaler().fit(X)
-	print((X == np.nan).any())
+	#print((X == np.nan).any())
 	scaled_X = X_scaler.transform(X)
 	return X, X_scaler, scaled_X
 
