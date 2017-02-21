@@ -19,15 +19,15 @@ import numpy as np
 import utils
 
 # Parameters
-color_space = 'YCrCb'		# Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+color_space = 'YUV'		# Can be RGB, HSV, LUV, HLS, YUV, YCrCb
 orient = 9  				# HOG orientations
 pix_per_cell = 8 			# HOG pixels per cell
 cell_per_block = 2 			# HOG cells per block
 hog_channel = "ALL" 		# Can be 0, 1, 2, or "ALL"
-spatial_size = (16, 16) 	# Spatial binning dimensions
-hist_bins = 16  			# Number of histogram bins
-spatial_feat = False 		# Spatial features on or off
-hist_feat = False 			# Histogram features on or off
+spatial_size = (32, 32) 	# Spatial binning dimensions
+hist_bins = 32  			# Number of histogram bins
+spatial_feat = True 		# Spatial features on or off
+hist_feat = True 			# Histogram features on or off
 hog_feat = True 			# HOG features on or off
 y_start_stop = [380, 550]	# Min and max in y to search in slide_window()
 x_start_stop = [800, 1280]	# Min and max in x to search in slide_window()
@@ -135,9 +135,24 @@ detector = Detector(svc, X_scaler)
 print('Done training SVC')
 
 '''
-image_original = mpimg.imread('./test_images/test2.jpg')
-result = detector.process_frame(image_original)
-plt.imshow(result)
+image_1 = mpimg.imread('./test_images/test1.jpg')
+image_2 = mpimg.imread('./test_images/test2.jpg')
+image_3 = mpimg.imread('./test_images/test3.jpg')
+image_4 = mpimg.imread('./test_images/test4.jpg')
+image_5 = mpimg.imread('./test_images/test5.jpg')
+image_6 = mpimg.imread('./test_images/test6.jpg')
+result_1 = detector.process_frame(image_1)
+result_2 = detector.process_frame(image_2)
+result_3 = detector.process_frame(image_3)
+result_4 = detector.process_frame(image_4)
+result_5 = detector.process_frame(image_5)
+result_6 = detector.process_frame(image_6)
+plt.imshow(result_1)
+plt.imshow(result_2)
+plt.imshow(result_3)
+plt.imshow(result_4)
+plt.imshow(result_5)
+plt.imshow(result_6)
 plt.show()
 '''
 
