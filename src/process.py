@@ -30,7 +30,7 @@ spatial_feat = True 		# Spatial features on or off
 hist_feat = True 			# Histogram features on or off
 hog_feat = True 			# HOG features on or off
 y_start_stop = [380, 550]	# Min and max in y to search in slide_window()
-x_start_stop = [800, 1280]	# Min and max in x to search in slide_window()
+x_start_stop = [730, 1280]	# Min and max in x to search in slide_window()
 
 class Detector:
 	def __init__(self, svc, X_scaler):
@@ -156,7 +156,7 @@ plt.imshow(result_6)
 plt.show()
 '''
 
-output = 'output.mp4'
+output = 'output_more_x.mp4'
 clip1 = VideoFileClip("project_video.mp4")
 white_clip = clip1.fl_image(detector.process_frame) #NOTE: this function expects color images!!
 white_clip.write_videofile(output, audio=False)
