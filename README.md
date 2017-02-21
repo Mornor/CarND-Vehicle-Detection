@@ -6,6 +6,11 @@
 This is the 5th project of the <a href="https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013">Self Driving Car Engineer Nanodegree</a> I am taking part. <br>
 The aim of this project was to train a classifier (in this case, a Linear SVM) to detect vehicle base on a video stream from a camera mounted on the hood of a car. 
 
+### Results
+The output `output_detected_lines.mp4` is the results of this project combined with the [Advanced-line-detection](https://github.com/Mornor/CarND-Advanced-Lane-Lines) I previously coded. <br>
+The output `output.mp4` is the result of this project applied to the raw `project_video.mp4`. 
+![output](output_detected_lines_trimmed.gif)
+
 ### Data collection
 Here are links to the labeled data for [vehicle](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/vehicles.zip) and [non-vehicle](https://s3.amazonaws.com/udacity-sdc/Vehicle_Tracking/non-vehicles.zip) examples that has been chosen to train the classifier.  These example images come from a combination of the [GTI vehicle image database](http://www.gti.ssr.upm.es/data/Vehicle_database.html), the [KITTI vision benchmark suite](http://www.cvlibs.net/datasets/kitti/), and examples extracted from the project video itself.
 
