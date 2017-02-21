@@ -12,7 +12,7 @@ Here are links to the labeled data for [vehicle](https://s3.amazonaws.com/udacit
 ### Pipeline
 The following steps have been applied to each frame of the video stream in order to detect the vehicle(s):
 
-* Apply a color transform from RGB to YCrCb to the image.
+* Apply a color transform from RGB to YUV to the image.
 * Perform a Histogram of Oriented Gradients (HOG) feature extraction on the labeled training set of images.
 * Normalize the extracted features. 
 * Train the classifier
@@ -23,7 +23,7 @@ The following steps have been applied to each frame of the video stream in order
 
 ### Step details
 
-* Apply a color transform from RGB to YCrCb to the image. <br>
+* Apply a color transform from RGB to YUV to the image. <br>
 To decide which color space I was going to use, I run the trained classifier on the same image with different color space: <br>
   * RGB color space
 ![RGB_color_space](./output_images/Detection_RGB_all_hog_channels.png)
@@ -39,7 +39,7 @@ To decide which color space I was going to use, I run the trained classifier on 
 ![YCrCb_color_space](./output_images/Detection_YCrCb_all_hog_channels.png)
 
 
-Here, we can see that the YUV, YCrCb and LUV color space all did a pretyy good job identifying the 2 cars. However. YCrCb is the only one to distinctively detect them, therefore it is the color space I am going to use. 
+Here, we can see that the YUV, YCrCb and LUV color space all did a pretyy good job identifying the 2 cars. However. YCrCb is the only one to distinctively detect them, but YUV draw more boxes arounf the actual car which will be useful when it comes to detect false-positives with the Heatmap. It is the color-space I am going to use here. 
 
 * Perform a Histogram of Oriented Gradients (HOG) feature extraction on the labeled training set of images. <br>
 The HOG features of a particular image has been chosen to identify a car. This [paper](http://lear.inrialpes.fr/people/triggs/pubs/Dalal-cvpr05.pdf) served as a starting point. <br/>
@@ -84,3 +84,9 @@ It is possible that several boxes are drawn around th vehicle. It is for example
 * Output this bounding box around the vehicle(s). <br>
 The final result of the pipeline can be see in the following image: 
 ![result](./output_images/example_draw_boxes.png)
+
+
+###Discussion
+
+First of all, I only check on one part of the frame (the right bottom part), because in this case, the car on which the camera is mounted always drive to the left lane. We could enhanced this by searching a car within the whole half bottom part of the image. This way, the detection of vehicle will not be dependent anymore from the position of the car on which the camera is. <br>
+SVM is a ggod classifier, but we need to provide it labeled data. In this project, I extract some features from the image (HOG, color space etc...) to train the classifier, and it was difficult to find the right parameters to get a great precision. What I could d is to use a Deep Convulotionnal Network to better detect cars. Indeed, Convolutionals Layers are able to detect shape by itself, removing the need to extract features before procesing the images.
