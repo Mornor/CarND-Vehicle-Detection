@@ -19,7 +19,7 @@ import numpy as np
 import utils
 
 # Parameters
-color_space = 'YUV'		# Can be RGB, HSV, LUV, HLS, YUV, YCrCb
+color_space = 'YUV'			# Can be RGB, HSV, LUV, HLS, YUV, YCrCb
 orient = 9  				# HOG orientations
 pix_per_cell = 8 			# HOG pixels per cell
 cell_per_block = 2 			# HOG cells per block
@@ -134,29 +134,7 @@ print('Training SVC...')
 detector = Detector(svc, X_scaler)
 print('Done training SVC')
 
-'''
-image_1 = mpimg.imread('./test_images/test1.jpg')
-image_2 = mpimg.imread('./test_images/test2.jpg')
-image_3 = mpimg.imread('./test_images/test3.jpg')
-image_4 = mpimg.imread('./test_images/test4.jpg')
-image_5 = mpimg.imread('./test_images/test5.jpg')
-image_6 = mpimg.imread('./test_images/test6.jpg')
-result_1 = detector.process_frame(image_1)
-result_2 = detector.process_frame(image_2)
-result_3 = detector.process_frame(image_3)
-result_4 = detector.process_frame(image_4)
-result_5 = detector.process_frame(image_5)
-result_6 = detector.process_frame(image_6)
-plt.imshow(result_1)
-plt.imshow(result_2)
-plt.imshow(result_3)
-plt.imshow(result_4)
-plt.imshow(result_5)
-plt.imshow(result_6)
-plt.show()
-'''
-
-output = 'output_more_x.mp4'
-clip1 = VideoFileClip("project_video.mp4")
+output = 'output_detected_lines.mp4'
+clip1 = VideoFileClip("detected_lines.mp4")
 white_clip = clip1.fl_image(detector.process_frame) #NOTE: this function expects color images!!
 white_clip.write_videofile(output, audio=False)
