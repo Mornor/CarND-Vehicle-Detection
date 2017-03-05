@@ -119,7 +119,7 @@ def add_heat(heatmap, bbox_list):
 		heatmap[box[0][1]:box[1][1], box[0][0]:box[1][0]] += 1
 
 	# Return updated heatmap
-	return heatmap# Iterate through list of bboxes
+	return heatmap
 	
 def apply_threshold(heatmap, threshold):
 	# Zero out pixels below the threshold
@@ -165,7 +165,7 @@ def extract_features(images, color_space='RGB', spatial_size=(32, 32), hist_bins
 	# Iterate through the list of images
 	for image in images:
 		file_features = []
-		# apply color conversion if other than 'RGB'
+		# Apply color conversion if other than 'RGB'
 		if color_space != 'RGB':
 			feature_image = change_color_space(image, color_space)
 		else: 
@@ -267,7 +267,6 @@ def normalize(car_features, not_car_features):
 	"""
 	X = np.vstack((car_features, not_car_features)).astype(np.float64)                        
 	X_scaler = StandardScaler().fit(X)
-	#print((X == np.nan).any())
 	scaled_X = X_scaler.transform(X)
 	return X, X_scaler, scaled_X
 
