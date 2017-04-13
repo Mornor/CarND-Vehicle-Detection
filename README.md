@@ -3,7 +3,7 @@
 ## Project: Vehicle detection by training a Machine-Learning classifier
 
 ### Overview
-This is the 5th project of the <a href="https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013">Self Driving Car Engineer Nanodegree</a> I am taking part. <br>
+This is the 5th project of the [Self Driving Car Engineer Nanodegree](https://www.udacity.com/course/self-driving-car-engineer-nanodegree--nd013) I am taking part. <br>
 The aim of this project was to train a classifier (in this case, a Linear SVM) to detect vehicle base on a video stream from a camera mounted on the hood of a car. 
 
 ### Results
